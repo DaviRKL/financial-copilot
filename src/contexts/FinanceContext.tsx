@@ -1,6 +1,6 @@
 import React, {createContext, useContext, useState, useMemo, ReactNode} from "react";
 
-interface Transaction {
+export interface Transaction {
     id: string;
     description: string;
     amount: number;
@@ -9,7 +9,7 @@ interface Transaction {
     date: string;
 }
 
-interface BudgetSuggestion {
+export interface BudgetSuggestion {
     essential: number;
     investment: number;
     leisure: number;
@@ -22,7 +22,7 @@ interface FinanceContextData {
     suggestion: BudgetSuggestion | null;
     setIncome: (value: number) => void;
     setSuggestion: (suggestion: BudgetSuggestion) => void;
-    addTransaction: (transaction: Transaction) => void;
+    addTransaction: (transaction: Omit<Transaction, 'id' | 'date'>) => void;
 }
 
 const FinanceContext = createContext<FinanceContextData>({} as FinanceContextData);
