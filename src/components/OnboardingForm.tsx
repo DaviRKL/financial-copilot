@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import { useFinance } from "@/contexts/FinanceContext";
 
 export default function OnboardingForm() {
     const { setIncome, setSuggestion } = useFinance();
-
+    const router = useRouter();
     const [formData, setFormData] = useState({
         income: '',
         expenses: '',
@@ -11,12 +12,14 @@ export default function OnboardingForm() {
     });
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
+        setIsSuccess(false);
 
         try {
             const response = await fetch('/api/analyze', {
@@ -39,7 +42,9 @@ export default function OnboardingForm() {
             setIncome(Number(formData.income));
             setSuggestion(data);
 
+            setIsSuccess(true);
             console.log('Sugestão recebida:', data);
+            router.push('/dashboard');
         } catch (err) {
             setError("Não conseguimos processar sua análise agora. Tente Novamente mais tarde.");
         } finally {
@@ -54,31 +59,33 @@ export default function OnboardingForm() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Renda Mensal (R$)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="income">Renda Mensal (R$)</label>
                     <div className="relative">
                         <span className="absolute top-2 left-3 text-gray-400">R$</span>
-                        <input 
+                        <input
+                            id="income"
                             type="number"
                             required
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             placeholder="0,00"
                             value={formData.income}
-                            onChange={(e) => setFormData({...formData, income: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, income: e.target.value })}
                         />
                     </div>
-                </div> 
+                </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Gastos Mensais Fixos (R$)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="expenses">Gastos Mensais Fixos (R$)</label>
                     <div className="relative">
                         <span className="absolute top-2 left-3 text-gray-400">R$</span>
                         <input
+                            id="expenses"
                             type="number"
                             required
-                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition" 
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                             placeholder="Aluguel, contas, etc."
                             value={formData.expenses}
-                            onChange={(e) => setFormData({...formData, expenses: e.target.value})}
+                            onChange={(e) => setFormData({ ...formData, expenses: e.target.value })}
                         />
                     </div>
                 </div>
@@ -90,9 +97,15 @@ export default function OnboardingForm() {
                 >
                     {isLoading ? (
                         <span className="animate-spin border-2 border-white border-t-transparent rounded-full h-5 w-5 mr-2"></span>
-                     ) : null}
+                    ) : null}
                     {isLoading ? 'Analisando perfil...' : 'Gerar Estratégia Financeira'}
                 </button>
+
+                {isSuccess && (
+                    <p className="text-green-600 text-sm text-center mt-4 font-medium">
+                        Análise concluída com sucesso!
+                    </p>
+                )}
 
                 {error && (
                     <p className="text-red-500 text-sm text-center mt-2 font-medium">{error}</p>
