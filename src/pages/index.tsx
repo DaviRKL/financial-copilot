@@ -5,13 +5,7 @@ import { ChartPieIcon, ShieldCheckIcon, SparklesIcon } from '@heroicons/react/24
 export default function Home() {
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
-      {/* Hero Section */}
-      <nav className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto">
-        <div className="text-2xl font-bold text-blue-600 flex items-center gap-2">
-          <SparklesIcon className="h-8 w-8" />
-          Financial Copilot
-        </div>
-      </nav>
+      
 
       <main className="max-w-7xl mx-auto px-8 pt-20 pb-32 grid lg:grid-cols-2 gap-12 items-center">
         <div>
@@ -52,10 +46,6 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer Simples */}
-      <footer className="border-t border-gray-100 py-12 text-center text-gray-400 text-sm">
-        &copy; 2026 Financial Copilot. Desenvolvido com Next.js e Groq IA.
-      </footer>
     </div>
   );
 }
